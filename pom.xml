@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.dvsa.testing</groupId>
+    <artifactId>vol-app-security-test</artifactId>
+    <version>1.5</version>
+
+    <properties>
+        <nexus.releases>https://nexus.olcs.dev-dvsacloud.uk/repository/maven-releases</nexus.releases>
+        <nexus.snapshots>https://nexus.olcs.dev-dvsacloud.uk/repository/maven-snapshots</nexus.snapshots>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.version>3.8.1</maven.compiler.version>
+        <junit.version>5.6.2</junit.version>
+        <active-support.version>1.6.6</active-support.version>
+        <uri-constructor.version>1.5.7</uri-constructor.version>
+        <zap-scanner-suite.version>0.7</zap-scanner-suite.version>
+        <vol-api-calls.version>1.1.11</vol-api-calls.version>
+        <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>maven-releases</id>
+            <url>${nexus.releases}</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>yle-public</id>
+            <name>Yle public repository</name>
+            <url>https://maven.yle.fi/release</url>
+            <layout>default</layout>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <build>
+        <extensions>
+        <extension>
+            <groupId>fi.yle.tools</groupId>
+            <artifactId>aws-maven</artifactId>
+            <version>1.4.1</version>
+        </extension>
+    </extensions>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.version}</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven.surefire.plugin.version}</version>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.dvsa.testing.lib</groupId>
+            <artifactId>active-support</artifactId>
+            <version>${active-support.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.dvsa.testing.lib</groupId>
+            <artifactId>uri-constructor</artifactId>
+            <version>${uri-constructor.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.dvsa.testing.lib</groupId>
+            <artifactId>zap-scanner-suite</artifactId>
+            <version>${zap-scanner-suite.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.dvsa.testing.framework</groupId>
+            <artifactId>vol-api-calls</artifactId>
+            <version>${vol-api-calls.version}</version>
+        </dependency>
+    </dependencies>
+</project>

@@ -1,0 +1,8 @@
+/.idea/
+/Reports/
+/target/
+/src/test/resources/application.conf
+*.iml
+/ZAP_2.11.1/
+/runZap.sh
+/LOGS
