@@ -18,14 +18,10 @@ import utils.BasePage;
 import utils.Utils;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.time.Duration;
-import java.util.Objects;
 
-import static activesupport.aws.s3.S3.getTempPassword;
 import static activesupport.driver.Browser.navigate;
-import static utils.BasePage.*;
 import static utils.Utils.refreshPageWithJavascript;
 
 public class ApplicationJourneys extends BasePage {
