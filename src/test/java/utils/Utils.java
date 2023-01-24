@@ -1,9 +1,11 @@
 package utils;
 
 import activesupport.IllegalBrowserException;
+import activesupport.config.Configuration;
 import activesupport.dates.Dates;
 import activesupport.dates.LocalDateCalendar;
 import activesupport.driver.Browser;
+import com.typesafe.config.Config;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.By;
@@ -22,7 +24,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class Utils {
-
+    private static Config config = new Configuration().getConfig();
+    public static String newPassword = config.getString("adminPassword");
     public void selectAllRadioButtonsByValue(String value)  {
         List<WebElement> radioButtons = Browser.navigate().findElements(By.xpath("//*[@type='radio']"));
         radioButtons.stream().filter((x) -> x.getAttribute("value").equals(value)).filter((isChecked) -> !isChecked.isSelected()).forEach((x) -> {

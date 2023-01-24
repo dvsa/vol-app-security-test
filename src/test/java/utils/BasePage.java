@@ -2,7 +2,6 @@ package utils;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import utils.DriverUtils;
 import enums.SelectorType;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.NoSuchElementException;

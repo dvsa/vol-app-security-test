@@ -4,7 +4,6 @@ import activesupport.system.Properties;
 import activesupport.config.Configuration;
 import activesupport.driver.Browser;
 
-import apiCalls.actions.RegisterUser;
 import com.typesafe.config.Config;
 
 import org.dvsa.testing.lib.url.utils.EnvironmentType;
@@ -15,7 +14,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import org.openqa.selenium.By;
 import scanner.ScannerMethods;
+
+import static utils.Utils.newPassword;
+import static utils.Utils.refreshPageWithJavascript;
 
 public class UIJourneyScannerAppScannerTest {
 
@@ -23,8 +26,6 @@ public class UIJourneyScannerAppScannerTest {
 
     private Config config = new Configuration().getConfig();
 
-    private String USERNAME;
-    private String EMAIL_ADDRESS;
 
     private final String IP_ADDRESS = config.getString("ipAddress");
     private final String CONTEXT_NAME = config.getString("contextName");
@@ -35,6 +36,7 @@ public class UIJourneyScannerAppScannerTest {
 
     private final ScannerMethods scanner = new ScannerMethods(IP_ADDRESS, PROXY_PORT);
     private final ApplicationJourneys applicationJourneys = new ApplicationJourneys();
+    private final Application application = new Application();
 
     @Before
     public void setUp() {
@@ -47,17 +49,20 @@ public class UIJourneyScannerAppScannerTest {
         String urlToScan = URL.build(ApplicationType.EXTERNAL, env).toString();
 
         String contextURLRegex = String.format("https://ssweb.%s.olcs.dev-dvsacloud.uk/.*", env);
-        String newPassword = config.getString("password");
         String loginRequestData  = "username={%username%}&password={%password%}";
 
         //register user with vol-api-calls
-        registerUserByAPI();
-
+        application.createApplicationViaAPI(newPassword);
         //navigate to vol website
-        applicationJourneys.navigateToExternalSite();
-        applicationJourneys.loginIntoExternalSite(USERNAME, EMAIL_ADDRESS);
-        applicationJourneys.applyForALicence();
+        refreshPageWithJavascript();
+        Browser.navigate().findElement(By.partialLinkText(application.getApplicationId())).click();
+        applicationJourneys.uploadFinancialEvidence();
+        applicationJourneys.saveAndReturn();
         applicationJourneys.addFinancialHistory();
+        applicationJourneys.saveAndReturn();
+        Browser.navigate().findElement(By.partialLinkText("Review")).click();
+        Browser.navigate().findElement(By.xpath("//*[contains(text(),'Print')]")).click();
+        applicationJourneys.payForApplication();
 
         //scan with zap
         scanner.createContext(CONTEXT_NAME);
@@ -65,17 +70,10 @@ public class UIJourneyScannerAppScannerTest {
         scanner.setScannerAttackStrength(SCAN_POLICY, SCAN_ATTACK_STRENGTH);
         scanner.setAuthenticationMethod(urlToScan, loginRequestData, "formBasedAuthentication");
         scanner.loggedInIndicator("<a href=\"/your-account/\" class=\"govuk-header__link\">Your account</a>");
-        scanner.authenticateUser(USERNAME, newPassword);
+        scanner.authenticateUser(application.getUsername(), newPassword);
         scanner.performSpiderCrawlAsUser(urlToScan);
         scanner.performActiveAttackAsUser(urlToScan);
         scanner.createReport(SCAN_REPORT_NAME, urlToScan);
-    }
-
-    public void registerUserByAPI() {
-        RegisterUser registerUser = new RegisterUser();
-        registerUser.registerUser();
-        this.EMAIL_ADDRESS = registerUser.getEmailAddress();
-        this.USERNAME = registerUser.getUserName();
     }
 
     @After
