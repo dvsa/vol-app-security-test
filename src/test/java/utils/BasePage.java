@@ -126,20 +126,6 @@ public abstract class BasePage extends DriverUtils {
         selectItem.selectByIndex(listValue);
     }
 
-    public void cycleThroughPaginationUntilElementIsDisplayed(String linkTextArgument) {
-        List<WebElement> pagination = getDriver().findElements(By.xpath("//ul[@class='pagination right-aligned']"));
-        int pagination_count = pagination.size() + 1;
-        outsideloop:
-        while (!isElementPresent(linkTextArgument, SelectorType.LINKTEXT))
-            for (int i = 0; i <= pagination_count; i++) {
-                isElementNotPresent(linkTextArgument, SelectorType.LINKTEXT);
-                scrollAndClick("Next", SelectorType.LINKTEXT);
-                if (isElementPresent(linkTextArgument, SelectorType.LINKTEXT)) {
-                    break outsideloop;
-                }
-            }
-    }
-
     public static String selectRandomValueFromDropDown(String idArgument) {
         Select select = new Select(getDriver().findElement(By.id(idArgument)));
         Random random = new Random();
@@ -169,7 +155,7 @@ public abstract class BasePage extends DriverUtils {
         }
     }
 
-    protected static boolean isLinkPresent(String locator, int duration) {
+    public static boolean isLinkPresent(String locator, int duration) {
         Wait<WebDriver> wait = new FluentWait<>(getDriver())
                 .withTimeout(ofSeconds(duration))
                 .pollingEvery(ofSeconds(POLLING_SECONDS))
