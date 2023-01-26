@@ -21,10 +21,10 @@ the Selenium test will start on the selenium proxy and listen to any incoming tr
  ``  
      sh zap.sh -config api.disablekey=true -daemon -port 8090
   ``
-* Use the following command to start the test `mvn clean test -Denv=qa -Dbrowser=chrome-proxy`
+* Use the following command to start the test `mvn clean test -Denv=qa -Dbrowser=firefox-proxy`
 
 ## Pipeline
-* Pass in the following arguments -Denv=qa and -Dbrowser=chrome-proxy
+* Pass in the following arguments -Denv=qa and -Dbrowser=firefox-proxy
 
 ## Reports
  - passive and active scans report can be found in the following location Reports/

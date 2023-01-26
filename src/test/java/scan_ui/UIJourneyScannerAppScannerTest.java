@@ -1,10 +1,10 @@
 package scan_ui;
 
+import activesupport.IllegalBrowserException;
 import activesupport.system.Properties;
 import activesupport.config.Configuration;
 import activesupport.driver.Browser;
 
-import apiCalls.actions.RegisterUser;
 import com.typesafe.config.Config;
 
 import org.dvsa.testing.lib.url.utils.EnvironmentType;
@@ -15,7 +15,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import org.openqa.selenium.By;
 import scanner.ScannerMethods;
+import utils.BasePage;
+
+import java.net.MalformedURLException;
+
+import static utils.Utils.newPassword;
+import static utils.Utils.refreshPageWithJavascript;
 
 public class UIJourneyScannerAppScannerTest {
 
@@ -23,8 +30,6 @@ public class UIJourneyScannerAppScannerTest {
 
     private Config config = new Configuration().getConfig();
 
-    private String USERNAME;
-    private String EMAIL_ADDRESS;
 
     private final String IP_ADDRESS = config.getString("ipAddress");
     private final String CONTEXT_NAME = config.getString("contextName");
@@ -35,47 +40,46 @@ public class UIJourneyScannerAppScannerTest {
 
     private final ScannerMethods scanner = new ScannerMethods(IP_ADDRESS, PROXY_PORT);
     private final ApplicationJourneys applicationJourneys = new ApplicationJourneys();
+    private final Application application = new Application();
 
     @Before
-    public void setUp() {
+    public void setUp() throws MalformedURLException, IllegalBrowserException {
         Browser.setIpAddress(String.valueOf(IP_ADDRESS));
         Browser.setPortNumber(String.valueOf(PROXY_PORT));
+        application.createApplicationViaAPI(newPassword);
     }
 
     @Test
     public void fileUploadScan() throws Exception {
         String urlToScan = URL.build(ApplicationType.EXTERNAL, env).toString();
 
-        String contextURLRegex = String.format("https://ssweb.%s.olcs.dev-dvsacloud.uk/.*", env);
-        String newPassword = config.getString("password");
+        String contextURLRegex = String.format("https://ssweb.%s.olcs.dev-dvsacloud.uk/*", env);
         String loginRequestData  = "username={%username%}&password={%password%}";
 
-        //register user with vol-api-calls
-        registerUserByAPI();
-
         //navigate to vol website
-        applicationJourneys.navigateToExternalSite();
-        applicationJourneys.loginIntoExternalSite(USERNAME, EMAIL_ADDRESS);
-        applicationJourneys.applyForALicence();
+        refreshPageWithJavascript();
+        if(BasePage.isLinkPresent(application.getApplicationId(),20))
+        Browser.navigate().findElement(By.partialLinkText(application.getApplicationId())).click();
+        applicationJourneys.uploadFinancialEvidence();
+        applicationJourneys.saveAndReturn();
         applicationJourneys.addFinancialHistory();
+        applicationJourneys.saveAndReturn();
+        Browser.navigate().findElement(By.partialLinkText("Review")).click();
+        Browser.navigate().findElement(By.xpath("//*[contains(text(),'Print')]")).click();
 
         //scan with zap
         scanner.createContext(CONTEXT_NAME);
+        scanner.enableAllPassiveScanners();
+        scanner.enableAllActiveScanners(SCAN_POLICY);
+        scanner.excludeUrlFromSpiderScan("^((?!(https://firefox-settings-attachments.cdn.mozilla.net|https://tracking-protection.cdn.mozilla.net|https://content-signature-2.cdn.mozilla.net|https://firefox.settings.services.mozilla.com|https://location.services.mozilla.com)).*)$");
+        scanner.excludeUrlFromActiveScan("^((?!(https://firefox-settings-attachments.cdn.mozilla.net|https://tracking-protection.cdn.mozilla.net|https://content-signature-2.cdn.mozilla.net|https://firefox.settings.services.mozilla.com|https://location.services.mozilla.com)).*)$");
         scanner.includeInContext(CONTEXT_NAME, contextURLRegex);
-        scanner.setScannerAttackStrength(SCAN_POLICY, SCAN_ATTACK_STRENGTH);
         scanner.setAuthenticationMethod(urlToScan, loginRequestData, "formBasedAuthentication");
-        scanner.loggedInIndicator("<a href=\"/your-account/\" class=\"govuk-header__link\">Your account</a>");
-        scanner.authenticateUser(USERNAME, newPassword);
+        scanner.loggedInIndicator("<a href=\"/auth/logout/\" class=\"govuk-header__link\">Sign out</a>");
+        scanner.authenticateUser(application.getUsername(), newPassword);
         scanner.performSpiderCrawlAsUser(urlToScan);
         scanner.performActiveAttackAsUser(urlToScan);
         scanner.createReport(SCAN_REPORT_NAME, urlToScan);
-    }
-
-    public void registerUserByAPI() {
-        RegisterUser registerUser = new RegisterUser();
-        registerUser.registerUser();
-        this.EMAIL_ADDRESS = registerUser.getEmailAddress();
-        this.USERNAME = registerUser.getUserName();
     }
 
     @After
