@@ -71,8 +71,6 @@ public class UIJourneyScannerAppScannerTest {
         scanner.createContext(CONTEXT_NAME);
         scanner.enableAllPassiveScanners();
         scanner.enableAllActiveScanners(SCAN_POLICY);
-        scanner.excludeUrlFromSpiderScan("^((?!(https://firefox-settings-attachments.cdn.mozilla.net|https://tracking-protection.cdn.mozilla.net|https://content-signature-2.cdn.mozilla.net|https://firefox.settings.services.mozilla.com|https://location.services.mozilla.com)).*)$");
-        scanner.excludeUrlFromActiveScan("^((?!(https://firefox-settings-attachments.cdn.mozilla.net|https://tracking-protection.cdn.mozilla.net|https://content-signature-2.cdn.mozilla.net|https://firefox.settings.services.mozilla.com|https://location.services.mozilla.com)).*)$");
         scanner.includeInContext(CONTEXT_NAME, contextURLRegex);
         scanner.setAuthenticationMethod(urlToScan, loginRequestData, "formBasedAuthentication");
         scanner.loggedInIndicator("<a href=\"/auth/logout/\" class=\"govuk-header__link\">Sign out</a>");
