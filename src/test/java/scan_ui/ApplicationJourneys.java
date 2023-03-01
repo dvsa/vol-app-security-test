@@ -81,7 +81,7 @@ public class ApplicationJourneys extends BasePage {
         if (System.getProperty("platform") == null) {
             uploadFile("//*[@id='evidence[files][file]']", System.getProperty("user.dir").concat(String.valueOf(file)), "document.getElementById('evidence[files][file]').style.left = 0", SelectorType.XPATH);
         } else {
-            WebElement addFile = getDriver().findElement(By.xpath("//*[@id='evidence[files][file]'"));
+            WebElement addFile = getDriver().findElement(By.xpath("//*[@id='evidence[files][file]']"));
             ((RemoteWebElement) addFile).setFileDetector(new LocalFileDetector());
             addFile.sendKeys(System.getProperty("user.dir").concat(String.valueOf(file)));
         }
@@ -111,7 +111,7 @@ public class ApplicationJourneys extends BasePage {
         waitAndClick("form-actions[saveAndContinue]", SelectorType.ID);
     }
 
-    private void signIn(@NotNull String emailAddress, @NotNull String password) throws IllegalBrowserException, MalformedURLException {
+    private void signIn(@NotNull String emailAddress, @NotNull String password){
         navigate().findElement(By.name("username")).sendKeys(emailAddress);
         navigate().findElement(By.name("password")).sendKeys(password);
         navigate().findElement(By.name("submit")).click();
