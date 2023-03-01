@@ -79,8 +79,10 @@ public class ApplicationJourneys extends BasePage {
 
         click("uploadNowRadio",SelectorType.ID);
         if (System.getProperty("platform") == null) {
+            System.out.println("THIS IS WRONG");
             uploadFile("//*[@id='evidence[files][file]']", System.getProperty("user.dir").concat(String.valueOf(file)), "document.getElementById('evidence[files][file]').style.left = 0", SelectorType.XPATH);
         } else {
+            System.out.println("YOU ARE HERE");
             WebElement addFile = getDriver().findElement(By.xpath("//*[@id='evidence[files][file]']"));
             ((RemoteWebElement) addFile).setFileDetector(new LocalFileDetector());
             addFile.sendKeys(System.getProperty("user.dir").concat(String.valueOf(file)));
