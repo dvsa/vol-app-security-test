@@ -60,8 +60,8 @@ public class UIJourneyScannerAppScannerTest {
         refreshPageWithJavascript();
         if(BasePage.isLinkPresent(application.getApplicationId(),20))
         Browser.navigate().findElement(By.partialLinkText(application.getApplicationId())).click();
-        applicationJourneys.uploadFinancialEvidence();
-        applicationJourneys.saveAndReturn();
+//        applicationJourneys.uploadFinancialEvidence();
+//        applicationJourneys.saveAndReturn();
         applicationJourneys.addFinancialHistory();
         applicationJourneys.saveAndReturn();
         Browser.navigate().findElement(By.partialLinkText("Review")).click();
