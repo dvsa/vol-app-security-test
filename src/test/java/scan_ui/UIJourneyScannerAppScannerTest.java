@@ -39,17 +39,17 @@ public class UIJourneyScannerAppScannerTest {
 
     private static final ScannerMethods scanner = new ScannerMethods(IP_ADDRESS, PROXY_PORT);
     private final ApplicationJourneys applicationJourneys = new ApplicationJourneys();
-    private final static Application application = new Application();
+    private final Application application = new Application();
 
     @BeforeAll
     public static void setUp() throws MalformedURLException, IllegalBrowserException {
         Browser.setIpAddress(IP_ADDRESS);
         Browser.setPortNumber(String.valueOf(PROXY_PORT));
-        application.createApplicationViaAPI(newPassword);
     }
 
     @Test
     public void fileUploadScan() throws Exception {
+        application.createApplicationViaAPI(newPassword);
         String urlToScan = URL.build(ApplicationType.EXTERNAL, env).toString();
 
         String contextURLRegex = String.format("https://ssweb.%s.olcs.dev-dvsacloud.uk/*", env);
