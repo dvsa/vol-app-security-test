@@ -42,7 +42,7 @@ public class UIJourneyScannerAppScannerTest {
     private final Application application = new Application();
 
     @BeforeAll
-    public static void setUp() throws MalformedURLException, IllegalBrowserException {
+    public static void setUp() {
         Browser.setIpAddress(IP_ADDRESS);
         Browser.setPortNumber(String.valueOf(PROXY_PORT));
     }
