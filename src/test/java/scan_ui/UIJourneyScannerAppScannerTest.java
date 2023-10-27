@@ -11,10 +11,9 @@ import org.dvsa.testing.lib.url.utils.EnvironmentType;
 import org.dvsa.testing.lib.url.webapp.URL;
 import org.dvsa.testing.lib.url.webapp.utils.ApplicationType;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import scanner.ScannerMethods;
 import utils.BasePage;
@@ -28,23 +27,23 @@ public class UIJourneyScannerAppScannerTest {
 
     private EnvironmentType env = EnvironmentType.getEnum(Properties.get("env", true));
 
-    private Config config = new Configuration().getConfig();
+    private static Config config = new Configuration().getConfig();
 
 
-    private final String IP_ADDRESS = config.getString("ipAddress");
+    private static final String IP_ADDRESS = config.getString("ipAddress");
     private final String CONTEXT_NAME = config.getString("contextName");
     private final String SCAN_REPORT_NAME = config.getString("reportName");
     private final String SCAN_POLICY = config.getString("policy");
     private final String SCAN_ATTACK_STRENGTH = config.getString("attackStrength");
-    private final int PROXY_PORT = config.getInt("proxyPort");
+    private static final int PROXY_PORT = config.getInt("proxyPort");
 
-    private final ScannerMethods scanner = new ScannerMethods(IP_ADDRESS, PROXY_PORT);
+    private static final ScannerMethods scanner = new ScannerMethods(IP_ADDRESS, PROXY_PORT);
     private final ApplicationJourneys applicationJourneys = new ApplicationJourneys();
-    private final Application application = new Application();
+    private static final Application application = new Application();
 
-    @Before
-    public void setUp() throws MalformedURLException, IllegalBrowserException {
-        Browser.setIpAddress(String.valueOf(IP_ADDRESS));
+    @BeforeAll
+    public static void setUp() throws MalformedURLException, IllegalBrowserException {
+        Browser.setIpAddress(IP_ADDRESS);
         Browser.setPortNumber(String.valueOf(PROXY_PORT));
         application.createApplicationViaAPI(newPassword);
     }
@@ -54,14 +53,12 @@ public class UIJourneyScannerAppScannerTest {
         String urlToScan = URL.build(ApplicationType.EXTERNAL, env).toString();
 
         String contextURLRegex = String.format("https://ssweb.%s.olcs.dev-dvsacloud.uk/*", env);
-        String loginRequestData  = "username={%username%}&password={%password%}";
+        String loginRequestData = "username={%username%}&password={%password%}";
 
         //navigate to vol website
         refreshPageWithJavascript();
-        if(BasePage.isLinkPresent(application.getApplicationId(),20))
-        Browser.navigate().findElement(By.partialLinkText(application.getApplicationId())).click();
-//        applicationJourneys.uploadFinancialEvidence();
-//        applicationJourneys.saveAndReturn();
+        if (BasePage.isLinkPresent(application.getApplicationId(), 20))
+            Browser.navigate().findElement(By.partialLinkText(application.getApplicationId())).click();
         applicationJourneys.addFinancialHistory();
         applicationJourneys.saveAndReturn();
         Browser.navigate().findElement(By.partialLinkText("Review")).click();
@@ -80,8 +77,8 @@ public class UIJourneyScannerAppScannerTest {
         scanner.createReport(SCAN_REPORT_NAME, urlToScan);
     }
 
-    @After
-    public void tearDown() throws Exception {
+    @AfterAll
+    public static void tearDown() throws Exception {
         Browser.closeBrowser();
         scanner.stopZap();
     }
