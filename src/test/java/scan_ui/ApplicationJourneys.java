@@ -22,6 +22,8 @@ import utils.Utils;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 import static activesupport.driver.Browser.navigate;
 import static utils.Utils.refreshPageWithJavascript;
@@ -64,7 +66,7 @@ public class ApplicationJourneys extends BasePage {
         }
     }
 
-    public void applyForALicence(){
+    public void applyForALicence() {
         clickByLinkText("Apply");
         waitAndClick("//*[contains(text(),'Great')]", SelectorType.XPATH);
         waitAndClick("//*[contains(text(),'Goods')]", SelectorType.XPATH);
@@ -72,12 +74,12 @@ public class ApplicationJourneys extends BasePage {
         waitAndClick("form-actions[saveAndContinue]", SelectorType.ID);
     }
 
-    public void uploadFinancialEvidence(){
+    public void uploadFinancialEvidence() {
         refreshPageWithJavascript();
         clickByLinkText("Financial evidence");
-        File file = new File("/src/test/resources/vulnerability_files/test_malware.pdf");
+        File file = new File("/src/test/resources/vulnerability_files/disclose.xml");
 
-        click("uploadNowRadio",SelectorType.ID);
+        click("uploadNowRadio", SelectorType.ID);
         if (System.getProperty("platform") == null) {
             uploadFile("//*[@id='evidence[files][file]']", System.getProperty("user.dir").concat(String.valueOf(file)), "document.getElementById('evidence[files][file]').style.left = 0", SelectorType.XPATH);
         } else {
@@ -85,24 +87,30 @@ public class ApplicationJourneys extends BasePage {
             ((RemoteWebElement) addFile).setFileDetector(new LocalFileDetector());
             addFile.sendKeys(System.getProperty("user.dir").concat(String.valueOf(file)));
         }
-        click("uploadLaterRadio",SelectorType.ID);
+        click("uploadLaterRadio", SelectorType.ID);
         waitAndClick("form-actions[saveAndContinue]", SelectorType.ID);
     }
 
     public void addFinancialHistory() {
         refreshPageWithJavascript();
         Utils utils = new Utils();
-        File file = new File("/src/test/resources/vulnerability_files/injection.html");
+        File injectionFile = new File("/src/test/resources/vulnerability_files/injection.html");
+        File discloseFile = new File("/src/test/resources/vulnerability_files/disclose.xml");
+        List<File> filesList = new ArrayList<>();
+        filesList.add(injectionFile);
+        filesList.add(discloseFile);
 
         clickByLinkText("Financial history");
         utils.selectAllRadioButtonsByValue("Y");
 
-        if (System.getProperty("platform") == null) {
-            uploadFile("//*[@id='data[file][file]']", System.getProperty("user.dir").concat(String.valueOf(file)), "document.getElementById('data[file][file]').style.left = 0", SelectorType.XPATH);
-        } else {
-            WebElement addFile = getDriver().findElement(By.xpath("//*[@id='data[file][file]']"));
-            ((RemoteWebElement) addFile).setFileDetector(new LocalFileDetector());
-            addFile.sendKeys(System.getProperty("user.dir").concat(String.valueOf(file)));
+        for(File file : filesList) {
+            if (System.getProperty("platform") == null) {
+                uploadFile("//*[@id='data[file][file]']", System.getProperty("user.dir").concat(String.valueOf(file)), "document.getElementById('data[file][file]').style.left = 0", SelectorType.XPATH);
+            } else {
+                WebElement addFile = getDriver().findElement(By.xpath("//*[@id='data[file][file]']"));
+                ((RemoteWebElement) addFile).setFileDetector(new LocalFileDetector());
+                addFile.sendKeys(System.getProperty("user.dir").concat(String.valueOf(file)));
+            }
         }
         String xmlInjectionLaugh = "X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*" +
                 "X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*" +
@@ -111,18 +119,19 @@ public class ApplicationJourneys extends BasePage {
         waitAndClick("form-actions[saveAndContinue]", SelectorType.ID);
     }
 
-    private void signIn(@NotNull String emailAddress, @NotNull String password){
+    private void signIn(@NotNull String emailAddress, @NotNull String password) {
         navigate().findElement(By.name("username")).sendKeys(emailAddress);
         navigate().findElement(By.name("password")).sendKeys(password);
         navigate().findElement(By.name("submit")).click();
     }
-    public void payForApplication(){
+
+    public void payForApplication() {
         clickById("submitAndPay");
         clickById("form-actions[pay]");
         customerPaymentModule();
     }
 
-    public void customerPaymentModule()  {
+    public void customerPaymentModule() {
         EnvironmentType env = EnvironmentType.getEnum(Properties.get("env", true));
         Config config = new activesupport.config.Configuration(env.toString()).getConfig();
         waitForTextToBePresent("Card Number*");
@@ -143,19 +152,19 @@ public class ApplicationJourneys extends BasePage {
         }
     }
 
-    public void enterCardHolderDetails(){
-        waitAndEnterText("scp_tdsv2AdditionalInfoPage_cardholderName_input",SelectorType.ID, "SecurityUser" + " " + "Hacker");
-        waitAndEnterText("scp_tdsv2AdditionalInfoPage_address_1_input",SelectorType.ID, "24 VOL WAY");
-        if(isElementPresent("scp_tdsv2AdditionalInfoPage_address_2_input", SelectorType.ID)) {
+    public void enterCardHolderDetails() {
+        waitAndEnterText("scp_tdsv2AdditionalInfoPage_cardholderName_input", SelectorType.ID, "SecurityUser" + " " + "Hacker");
+        waitAndEnterText("scp_tdsv2AdditionalInfoPage_address_1_input", SelectorType.ID, "24 VOL WAY");
+        if (isElementPresent("scp_tdsv2AdditionalInfoPage_address_2_input", SelectorType.ID)) {
             waitAndEnterText("scp_tdsv2AdditionalInfoPage_address_2_input", SelectorType.ID, "Hacking");
         }
-        waitAndEnterText("scp_tdsv2AdditionalInfoPage_city_input",SelectorType.ID, "Nottingham");
-        waitAndEnterText("scp_tdsv2AdditionalInfoPage_postcode_input",SelectorType.ID, "NG1 3DV");
-        waitAndEnterText("scp_tdsv2AdditionalInfoPage_email_input",SelectorType.ID, "sec@vol.com");
-        waitAndClick("_eventId_continue",SelectorType.NAME);
+        waitAndEnterText("scp_tdsv2AdditionalInfoPage_city_input", SelectorType.ID, "Nottingham");
+        waitAndEnterText("scp_tdsv2AdditionalInfoPage_postcode_input", SelectorType.ID, "NG1 3DV");
+        waitAndEnterText("scp_tdsv2AdditionalInfoPage_email_input", SelectorType.ID, "sec@vol.com");
+        waitAndClick("_eventId_continue", SelectorType.NAME);
     }
 
-    public void saveAndReturn(){
+    public void saveAndReturn() {
         Browser.navigate().findElement(By.id("form-actions[save]")).click();
     }
 }
