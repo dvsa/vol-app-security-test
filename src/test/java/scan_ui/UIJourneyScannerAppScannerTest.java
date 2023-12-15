@@ -7,6 +7,7 @@ import activesupport.driver.Browser;
 
 import com.typesafe.config.Config;
 
+import org.apache.hc.core5.http.HttpException;
 import org.dvsa.testing.lib.url.utils.EnvironmentType;
 import org.dvsa.testing.lib.url.webapp.URL;
 import org.dvsa.testing.lib.url.webapp.utils.ApplicationType;
@@ -42,7 +43,7 @@ public class UIJourneyScannerAppScannerTest {
     private static final Application application = new Application();
 
     @BeforeAll
-    public static void setUp() throws MalformedURLException, IllegalBrowserException {
+    public static void setUp() throws MalformedURLException, IllegalBrowserException, HttpException {
         Browser.setIpAddress(IP_ADDRESS);
         Browser.setPortNumber(String.valueOf(PROXY_PORT));
         application.createApplicationViaAPI(newPassword);

@@ -6,18 +6,17 @@
 
     <groupId>org.dvsa.testing</groupId>
     <artifactId>vol-app-security-test</artifactId>
-    <version>1.5</version>
+    <version>1.6</version>
 
     <properties>
         <nexus.releases>https://nexus.olcs.dev-dvsacloud.uk/repository/maven-releases</nexus.releases>
-        <nexus.snapshots>https://nexus.olcs.dev-dvsacloud.uk/repository/maven-snapshots</nexus.snapshots>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.version>3.8.1</maven.compiler.version>
-        <junit.version>5.9.2</junit.version>
-        <active-support.version>2.0.1.4</active-support.version>
-        <uri-constructor.version>2.0.1</uri-constructor.version>
-        <zap-scanner-suite.version>0.8</zap-scanner-suite.version>
-        <vol-api-calls.version>1.1.11</vol-api-calls.version>
+        <junit.version>5.10.1</junit.version>
+        <active-support.version>2.0.1.7</active-support.version>
+        <uri-constructor.version>2.0.2</uri-constructor.version>
+        <zap-scanner-suite.version>0.9</zap-scanner-suite.version>
+        <vol-api-calls.version>2.0.2</vol-api-calls.version>
         <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
         <http-client.version>4.5.14</http-client.version>
     </properties>
@@ -39,21 +38,13 @@
     </pluginRepositories>
 
     <build>
-        <extensions>
-        <extension>
-            <groupId>fi.yle.tools</groupId>
-            <artifactId>aws-maven</artifactId>
-            <version>1.4.1</version>
-        </extension>
-    </extensions>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.version}</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <release>11</release>
                 </configuration>
             </plugin>
             <plugin>

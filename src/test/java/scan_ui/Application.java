@@ -6,6 +6,7 @@ import apiCalls.actions.GetUserDetails;
 import apiCalls.actions.RegisterUser;
 import apiCalls.enums.OperatorType;
 import apiCalls.enums.UserType;
+import org.apache.hc.core5.http.HttpException;
 
 import java.net.MalformedURLException;
 
@@ -14,7 +15,7 @@ public class Application {
 
     private String applicationId;
     private String username;
-    public void createApplicationViaAPI(String password) throws MalformedURLException, IllegalBrowserException {
+    public void createApplicationViaAPI(String password) throws MalformedURLException, IllegalBrowserException, HttpException {
         ApplicationJourneys applicationJourneys = new ApplicationJourneys();
         RegisterUser registerUser = new RegisterUser();
         registerUser.registerUser();
