@@ -3,7 +3,7 @@
 /target/
 /src/test/resources/application.conf
 *.iml
-/ZAP */
+/ZAP_2.14.0/
 /runZap.sh
 /LOGS
 .DS_Store
