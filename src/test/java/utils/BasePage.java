@@ -19,7 +19,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 public abstract class BasePage extends DriverUtils {
     public static final int WAIT_TIME_SECONDS = 5;
-    private static final int TIME_OUT_SECONDS = 500;
+    private static final int TIME_OUT_SECONDS = 5;
     private static final int POLLING_SECONDS = 2;
     private static final Logger LOGGER = LogManager.getLogger(BasePage.class);
 
@@ -104,6 +104,18 @@ public abstract class BasePage extends DriverUtils {
         selectItem.selectByVisibleText(listValue);
     }
 
+    public static void waitForTitleToBePresent(@NotNull String htmlTag, @NotNull String selector) {
+        waitForElementToBePresent(String.format("//%s[contains(text(),'%s')]", htmlTag, selector));
+    }
+
+    public static void waitForTitleToBePresent(@NotNull String selector) {
+        waitForElementToBePresent(String.format("//h1[contains(text(),'%s')]", selector));
+    }
+
+    public void clickAndContinue(){
+        waitAndClick("form-actions[saveAndContinue]", SelectorType.ID);
+    }
+
     public static boolean isLinkPresent(String locator, int duration) {
         Wait<WebDriver> wait = new FluentWait<>(getDriver())
                 .withTimeout(ofSeconds(duration))
@@ -120,6 +132,10 @@ public abstract class BasePage extends DriverUtils {
             return false;
         }
         return itsFound;
+    }
+    public void replaceText(String selector, SelectorType selectorType, String text) {
+        findElement(selector, selectorType).clear();
+        waitAndEnterText(selector, selectorType, text);
     }
 
     public void selectRandomCheckBoxOrRadioBtn(String typeArgument) {
@@ -210,7 +226,6 @@ public abstract class BasePage extends DriverUtils {
         if (jScript != null) {
             javaScriptExecutor(jScript);
         }
-
         enterText(inputBoxSelector, selectorType, file);
     }
 }

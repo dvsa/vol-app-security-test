@@ -15,7 +15,7 @@
         <junit.version>5.10.1</junit.version>
         <active-support.version>2.0.1.7</active-support.version>
         <uri-constructor.version>2.0.2</uri-constructor.version>
-        <zap-scanner-suite.version>0.9</zap-scanner-suite.version>
+        <zap-scanner-suite.version>1.0</zap-scanner-suite.version>
         <vol-api-calls.version>2.0.2</vol-api-calls.version>
         <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
         <http-client.version>4.5.14</http-client.version>

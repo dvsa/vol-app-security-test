@@ -6,17 +6,21 @@ import apiCalls.actions.GetUserDetails;
 import apiCalls.actions.RegisterUser;
 import apiCalls.enums.OperatorType;
 import apiCalls.enums.UserType;
+import enums.SelectorType;
+import org.apache.commons.codec.DecoderException;
 import org.apache.hc.core5.http.HttpException;
+import utils.BasePage;
 
 import java.net.MalformedURLException;
 
 
-public class Application {
+public class Application extends BasePage {
 
     private String applicationId;
     private String username;
-    public void createApplicationViaAPI(String password) throws MalformedURLException, IllegalBrowserException, HttpException {
-        ApplicationJourneys applicationJourneys = new ApplicationJourneys();
+
+    ApplicationJourneys applicationJourneys = new ApplicationJourneys();
+    public void createApplicationViaAPI(String password) throws MalformedURLException, IllegalBrowserException, HttpException, DecoderException {
         RegisterUser registerUser = new RegisterUser();
         registerUser.registerUser();
         applicationJourneys.navigateToExternalSite();
@@ -49,6 +53,18 @@ public class Application {
         setApplicationId(createApplication.getApplicationId());
         setUsername(registerUser.getUserName());
     }
+
+    public void createApplicationViaUI(String username, String password) {
+        applicationJourneys.navigateToExternalSite();
+        applicationJourneys.signIn(username, password);
+        waitAndClick("//*[contains(text(),'Apply for a new licence')]", SelectorType.XPATH);
+        waitForTitleToBePresent( "Type of licence");
+        waitAndClick("//*[contains(text(),'Goods vehicles')]", SelectorType.XPATH);
+        waitAndClick("//*[contains(text(),'Standard National')]", SelectorType.XPATH);
+        clickAndContinue();
+        waitForTitleToBePresent( "Apply for a new licence");
+    }
+
     public String getApplicationId() {
         return applicationId;
     }

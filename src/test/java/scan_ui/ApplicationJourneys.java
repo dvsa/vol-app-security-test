@@ -8,6 +8,8 @@ import activesupport.system.Properties;
 import com.typesafe.config.Config;
 
 import enums.SelectorType;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.net.QuotedPrintableCodec;
 import org.dvsa.testing.lib.url.utils.EnvironmentType;
 import org.dvsa.testing.lib.url.webapp.URL;
 import org.dvsa.testing.lib.url.webapp.utils.ApplicationType;
@@ -46,10 +48,11 @@ public class ApplicationJourneys extends BasePage {
         }
     }
 
-    public void loginIntoExternalSite(String username, String email) throws MalformedURLException, IllegalBrowserException {
+    public void loginIntoExternalSite(String username, String email) throws MalformedURLException, IllegalBrowserException, DecoderException {
+        QuotedPrintableCodec quotedPrintableCodec = new QuotedPrintableCodec();
         Config config = new Configuration().getConfig();
         String newPassword = config.getString("password");
-        String password = S3.getTempPassword(email, config.getString("bucketName"));
+        String password = quotedPrintableCodec.decode(S3.getTempPassword(email, config.getString("bucketName")));
 
         try {
             if (navigate().getCurrentUrl().contains("login")) {
@@ -103,7 +106,7 @@ public class ApplicationJourneys extends BasePage {
         clickByLinkText("Financial history");
         utils.selectAllRadioButtonsByValue("Y");
 
-        for(File file : filesList) {
+        for (File file : filesList) {
             if (System.getProperty("platform") == null) {
                 uploadFile("//*[@id='data[file][file]']", System.getProperty("user.dir").concat(String.valueOf(file)), "document.getElementById('data[file][file]').style.left = 0", SelectorType.XPATH);
             } else {
@@ -116,10 +119,13 @@ public class ApplicationJourneys extends BasePage {
                 "X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*" +
                 "X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE";
         findElement("data[insolvencyDetails]", SelectorType.ID).sendKeys(xmlInjectionLaugh);
+        if (isElementPresent("//*[@class='form-control form-control--checkbox form-control--advanced']", SelectorType.XPATH)) {
+            click("//*[@id='data[financialHistoryConfirmation][insolvencyConfirmation]']", SelectorType.XPATH);
+        }
         waitAndClick("form-actions[saveAndContinue]", SelectorType.ID);
     }
 
-    private void signIn(@NotNull String emailAddress, @NotNull String password) {
+    public void signIn(@NotNull String emailAddress, @NotNull String password) {
         navigate().findElement(By.name("username")).sendKeys(emailAddress);
         navigate().findElement(By.name("password")).sendKeys(password);
         navigate().findElement(By.name("submit")).click();
