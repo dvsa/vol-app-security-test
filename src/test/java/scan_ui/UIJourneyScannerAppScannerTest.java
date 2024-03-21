@@ -89,17 +89,19 @@ public class UIJourneyScannerAppScannerTest extends BasePage {
             scanner.authenticateUser(application.getUsername(), newPassword);
         }
         scanner.performSpiderCrawlAsUser(urlToScan);
-        scanner.performActiveAttackAsUser(urlToScan,SCAN_POLICY);
+        scanner.performActiveAttackAsUser(urlToScan, SCAN_POLICY);
         scanner.createReport(SCAN_REPORT_NAME, urlToScan);
     }
 
     @AfterAll
     public static void tearDown() throws Exception {
         clickByLinkText("Back");
-        waitForTitleToBePresent("Apply for a new licence");
-        clickByLinkText("Cancel application");
-        waitForTitleToBePresent("h2", "Cancel application");
-        waitAndClick("form-actions[submit]", SelectorType.ID);
+        if (isTitlePresent("Apply for a new licence", 5)) {
+            waitForTitleToBePresent("Apply for a new licence");
+            clickByLinkText("Cancel application");
+            waitForTitleToBePresent("h2", "Cancel application");
+            waitAndClick("form-actions[submit]", SelectorType.ID);
+        }
         Browser.closeBrowser();
         scanner.stopZap();
     }
