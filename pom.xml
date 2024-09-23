@@ -27,21 +27,6 @@
         </repository>
     </distributionManagement>
 
-    <repositories>
-        <repository>
-            <id>dvsa-github-packages</id>
-            <name>GitHub dvsa Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/dvsa/*</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
-
     <pluginRepositories>
         <pluginRepository>
             <id>yle-public</id>
