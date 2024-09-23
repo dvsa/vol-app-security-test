@@ -19,7 +19,7 @@ the Selenium test will start on the selenium proxy and listen to any incoming tr
 * Navigate to ZAP folder e.g. ``cd /zap/ZAP_X.X.X/``
 * Use the following command to start ZAP 
  ``  
-     sh zap.sh -config api.disablekey=true -daemon -port 8090
+     
   ``
 * Use the following command to start the test `mvn clean test -Denv=qa -Dbrowser=firefox-proxy`
 

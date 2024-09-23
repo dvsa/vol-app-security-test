@@ -3,30 +3,44 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>org.dvsa.testing</groupId>
     <artifactId>vol-app-security-test</artifactId>
     <version>1.6</version>
-
     <properties>
-        <nexus.releases>https://nexus.olcs.dev-dvsacloud.uk/repository/maven-releases</nexus.releases>
+        <github.url>https://maven.pkg.github.com/dvsa/vol-app-security-test</github.url>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.version>3.8.1</maven.compiler.version>
         <junit.version>5.10.1</junit.version>
-        <active-support.version>2.0.1.7</active-support.version>
-        <uri-constructor.version>2.0.2</uri-constructor.version>
-        <zap-scanner-suite.version>1.0</zap-scanner-suite.version>
-        <vol-api-calls.version>2.0.2</vol-api-calls.version>
+        <active-support.version>2.4.1</active-support.version>
+        <uri-constructor.version>2.0.5</uri-constructor.version>
+        <zap-scanner-suite.version>1.0.0</zap-scanner-suite.version>
+        <vol-api-calls.version>2.7.1</vol-api-calls.version>
         <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
         <http-client.version>4.5.14</http-client.version>
     </properties>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub dvsa Apache Maven Packages</name>
+            <url>${github.url}</url>
+        </repository>
+    </distributionManagement>
+
     <repositories>
         <repository>
-            <id>maven-releases</id>
-            <url>${nexus.releases}</url>
+            <id>dvsa-github-packages</id>
+            <name>GitHub dvsa Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/dvsa/*</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
+
 
     <pluginRepositories>
         <pluginRepository>
@@ -36,7 +50,6 @@
             <layout>default</layout>
         </pluginRepository>
     </pluginRepositories>
-
     <build>
         <plugins>
             <plugin>
@@ -54,7 +67,6 @@
             </plugin>
         </plugins>
     </build>
-
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
