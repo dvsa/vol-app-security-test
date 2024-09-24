@@ -30,14 +30,13 @@
     <repositories>
         <repository>
             <id>dvsa-github-packages</id>
-            <name>GitHub dvsa Apache Maven Packages</name>
             <url>https://maven.pkg.github.com/dvsa/*</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
         </repository>
     </repositories>
 
@@ -80,7 +79,7 @@
         </dependency>
         <dependency>
             <groupId>org.dvsa.testing.lib</groupId>
-            <artifactId>uri-constructor</artifactId>
+            <artifactId>vol-uri-constructor</artifactId>
             <version>${uri-constructor.version}</version>
         </dependency>
         <dependency>
