@@ -40,6 +40,7 @@
         </repository>
     </repositories>
 
+
     <pluginRepositories>
         <pluginRepository>
             <id>yle-public</id>
