@@ -27,6 +27,19 @@
         </repository>
     </distributionManagement>
 
+    <repositories>
+        <repository>
+            <id>dvsa-github-packages</id>
+            <url>https://maven.pkg.github.com/dvsa/*</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
     <pluginRepositories>
         <pluginRepository>
             <id>yle-public</id>
@@ -65,7 +78,7 @@
         </dependency>
         <dependency>
             <groupId>org.dvsa.testing.lib</groupId>
-            <artifactId>uri-constructor</artifactId>
+            <artifactId>vol-uri-constructor</artifactId>
             <version>${uri-constructor.version}</version>
         </dependency>
         <dependency>

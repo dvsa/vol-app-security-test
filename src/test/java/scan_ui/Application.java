@@ -2,7 +2,7 @@ package scan_ui;
 
 import activesupport.IllegalBrowserException;
 import apiCalls.actions.CreateApplication;
-import apiCalls.actions.GetUserDetails;
+import apiCalls.actions.UserDetails;
 import apiCalls.actions.RegisterUser;
 import apiCalls.enums.OperatorType;
 import apiCalls.enums.UserType;
@@ -25,7 +25,7 @@ public class Application extends BasePage {
         registerUser.registerUser();
         applicationJourneys.navigateToExternalSite();
         applicationJourneys.loginIntoExternalSite(registerUser.getUserName(), registerUser.getEmailAddress());
-        GetUserDetails userDetails = new GetUserDetails();
+        UserDetails userDetails = new UserDetails();
         CreateApplication createApplication = new CreateApplication(registerUser, userDetails);
         createApplication.setOperatorType(OperatorType.GOODS.name());
         userDetails.getUserDetails(UserType.EXTERNAL.asString(), registerUser.getUserId(), registerUser.getUserName(), password);
