@@ -1,10 +1,10 @@
 name: CD
 
 on:
-    push:
-     branches:
-       -  main
-    
+  push:
+    branches:
+      - main
+
 jobs:
   release-please:
     name: Release
@@ -20,35 +20,35 @@ jobs:
         id: release
         with:
           release-type: maven
-  
+
   call-build-maven:
     needs: release-please
     name: build with Maven
     uses: ./.github/workflows/maven.yaml
-  
+    with:
+      maven-goal: package
+
   publish:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-    needs: 
+    needs:
       - release-please
       - call-build-maven
     steps:
-        - name: checkout code
-          uses: actions/checkout@v4
+      - name: checkout code
+        uses: actions/checkout@v4
 
-        - name: Set up JDK 11
-          uses: actions/setup-java@v4
-          with:
-            java-version: '11'
-            distribution: 'corretto'
-            cache: 'maven'
-            
-        - name: Publish to GitHub Packages Apache Maven
-          if: ${{needs.release-please.outputs.release_created}}
-          run: mvn --batch-mode deploy
-          env:
-            GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-            
-  
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'corretto'
+          cache: 'maven'
+
+      - name: Publish to GitHub Packages Apache Maven
+        if: ${{needs.release-please.outputs.release_created}}
+        run: mvn --batch-mode deploy
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
