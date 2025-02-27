@@ -6,13 +6,12 @@ import activesupport.config.Configuration;
 import activesupport.driver.Browser;
 import activesupport.system.Properties;
 import com.typesafe.config.Config;
-
 import enums.SelectorType;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.net.QuotedPrintableCodec;
 import org.dvsa.testing.lib.url.utils.EnvironmentType;
-import org.dvsa.testing.lib.url.webapp.URL;
 import org.dvsa.testing.lib.url.webapp.utils.ApplicationType;
+import org.dvsa.testing.lib.url.webapp.webAppURL;
 import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -35,7 +34,7 @@ public class ApplicationJourneys extends BasePage {
     EnvironmentSetUp setUp = new EnvironmentSetUp();
 
     public void navigateToExternalSite() {
-        String myURL = URL.build(ApplicationType.EXTERNAL, setUp.getEnv()).toString();
+        String myURL = webAppURL.build(ApplicationType.EXTERNAL, setUp.getEnv()).toString();
 
         if (Browser.isBrowserOpen()) {
             navigate().manage().deleteAllCookies();
