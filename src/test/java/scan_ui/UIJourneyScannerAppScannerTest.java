@@ -1,28 +1,24 @@
 package scan_ui;
 
 import activesupport.IllegalBrowserException;
-import activesupport.system.Properties;
 import activesupport.config.Configuration;
 import activesupport.driver.Browser;
-
+import activesupport.system.Properties;
 import com.typesafe.config.Config;
-
 import enums.SelectorType;
 import org.apache.commons.codec.DecoderException;
+import activesupport.aws.s3.SecretsManager;
 import org.apache.hc.core5.http.HttpException;
 import org.dvsa.testing.lib.url.utils.EnvironmentType;
-import org.dvsa.testing.lib.url.webapp.URL;
 import org.dvsa.testing.lib.url.webapp.utils.ApplicationType;
-
+import org.dvsa.testing.lib.url.webapp.webAppURL;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
 import scanner.ScannerMethods;
 import utils.BasePage;
 
 import java.net.MalformedURLException;
-import java.util.Objects;
 
 import static utils.Utils.refreshPageWithJavascript;
 
@@ -33,15 +29,14 @@ public class UIJourneyScannerAppScannerTest extends BasePage {
     private static Config config = new Configuration().getConfig();
 
 
-    private static final String IP_ADDRESS = config.getString("ipAddress");
-    private final String CONTEXT_NAME = config.getString("contextName");
-    private final String SCAN_REPORT_NAME = config.getString("reportName");
-    private final String SCAN_POLICY = config.getString("policy");
-    private final String SCAN_ATTACK_STRENGTH = config.getString("attackStrength");
-    private static final int PROXY_PORT = config.getInt("proxyPort");
-    public static String username = config.getString("username");
-    public static String password = config.getString("intPassword");
-    public static String newPassword = config.getString("adminPassword");
+    private static final String IP_ADDRESS = "127.0.0.1";
+    private final String CONTEXT_NAME = "VOL_API";
+    private final String SCAN_REPORT_NAME = "Penetration_Results";
+    private final String SCAN_POLICY = "Default policy";
+    private static final int PROXY_PORT = 8090;
+    public static String username = SecretsManager.getSecretValue("username");
+    public static String password = SecretsManager.getSecretValue("intPassword");
+    public static String newPassword = SecretsManager.getSecretValue("adminPassword");
 
     private static final ScannerMethods scanner = new ScannerMethods(IP_ADDRESS, PROXY_PORT);
     private final ApplicationJourneys applicationJourneys = new ApplicationJourneys();
@@ -61,7 +56,7 @@ public class UIJourneyScannerAppScannerTest extends BasePage {
     @Test
     public void fileUploadScan() throws Exception {
         String contextURLRegex;
-        String urlToScan = URL.build(ApplicationType.EXTERNAL, env).toString();
+        String urlToScan = webAppURL.build(ApplicationType.EXTERNAL, env).toString();
         if (env.toString().equals("int")) {
             contextURLRegex = String.format("https://ssweb.%s.olcs.dvsacloud.uk/*", env);
         } else {
