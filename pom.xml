@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.dvsa.testing</groupId>
     <artifactId>vol-app-security-test</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.1.0</version>
     <properties>
         <github.url>https://maven.pkg.github.com/dvsa/vol-app-security-test</github.url>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
