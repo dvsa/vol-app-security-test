@@ -43,7 +43,6 @@ public class Application extends BasePage {
         createApplication.addTmResponsibilities();
         createApplication.submitTmResponsibilities();
         createApplication.addVehicleDetails();
-        createApplication.submitVehicleDeclaration();
         createApplication.addFinancialHistory();
         createApplication.addApplicationSafetyAndComplianceDetails();
         createApplication.addSafetyInspector();
