@@ -1,0 +1,9 @@
+# Ignore everything by default
+Dockerfile
+
+# But include these files and folders
+!src/** 
+!lib/** 
+!pom.xml
+!test-runner.sh
+!settings.xml
