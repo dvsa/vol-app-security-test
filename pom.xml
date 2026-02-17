@@ -9,9 +9,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.version>3.13.0</maven.compiler.version>
         <junit.version>5.11.3</junit.version>
-        <active-support.version>2.11.2</active-support.version>
-        <uri-constructor.version>2.2.0</uri-constructor.version>
-        <zap-scanner-suite.version>1.0.1</zap-scanner-suite.version>
+        <active-support.version>2.11.3</active-support.version>
+        <uri-constructor.version>2.4.0</uri-constructor.version>
+        <zap-scanner-suite.version>1.1.1</zap-scanner-suite.version>
         <vol-api-calls.version>3.2.3</vol-api-calls.version>
         <maven.surefire.plugin.version>3.5.2</maven.surefire.plugin.version>
         <http-client.version>4.5.14</http-client.version>
