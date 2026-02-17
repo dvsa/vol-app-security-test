@@ -1,0 +1,154 @@
+name: Docker
+on:
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+        required: false
+      version:
+        type: string
+        required: true
+      push:
+        type: boolean
+        required: true
+        default: false
+      is-release:
+        type: boolean
+        required: false
+        default: false
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag'
+        required: true
+        default: 'test'
+      push:
+        description: 'Push to registry'
+        type: boolean
+        required: true
+        default: false
+      is-release:
+        description: 'Is this a release?'
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  id-token: write
+  contents: read
+  packages: write
+
+env:
+  WORKING_DIR: infra/docker
+  REGISTRY: 054614622558.dkr.ecr.eu-west-1.amazonaws.com
+  REGISTRY_MIRROR: ghcr.io
+  AWS_OIDC_ROLE: ${{ vars.ACCOUNT_NONPROD_TEST_OIDC_ROLE }}
+  AWS_REGION: ${{ vars.TF_AWS_REGION }}
+  BATCH_SETTINGS: '[{ "id": "dvsa-github-packages","username": "${{secrets.SERVICE_USER}}","password": "${{secrets.SERVICE_USER_TOKEN}}"}]'
+  RUNNER_SETTINGS: '[{ "id": "dvsa-github-packages","configuration": {"httpHeaders": {"property": {"name": "Authorization","value": "Bearer ${{ secrets.GITHUB_TOKEN }}"}}} }]'
+
+jobs:
+  prepare:
+    runs-on: ubuntu-24.04-arm
+    outputs:
+      version: ${{ steps.normalize.outputs.version }}
+      push: ${{ steps.normalize.outputs.push }}
+      is-release: ${{ steps.normalize.outputs.is-release }}
+    steps:
+      - id: normalize
+        run: |
+          echo "version=${{ inputs.version || github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          echo "push=${{ inputs.push || github.event.inputs.push == 'true' }}" >> $GITHUB_OUTPUT
+          echo "is-release=${{ inputs.is-release || github.event.inputs.is-release == 'true' }}" >> $GITHUB_OUTPUT
+
+  lint:
+    needs: prepare
+    name: Lint
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: ${{ env.WORKING_DIR }}/Dockerfile
+
+  build:
+    needs: [prepare, lint]
+    name: Build ${{ needs.prepare.outputs.push == 'true' && 'and push' || '' }}
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v4
+      - uses: whelk-io/maven-settings-xml-action@v22
+        name: generate runtime settings xml
+        with:
+          servers: ${{ needs.prepare.outputs.push == 'true' && env.BATCH_SETTINGS || env.RUNNER_SETTINGS }}
+          proxies: '[{ "id":"dvsa-ci-proxy", "active": "true", "protocol": "http", "host": "${env.proxyHost}", "port": "3128" }]'
+          repositories: '[ { "id":"dvsa-github-packages", "name":"dvsa-github-packages", "url":"https://maven.pkg.github.com/dvsa/*", "releases": { "enabled": "true" }, "snapshots": { "enabled": "true" } }]'
+          output_file: ./settings-runtime.xml
+
+      - uses: whelk-io/maven-settings-xml-action@v22
+        name: generate build-time settings xml
+        with:
+          servers: ${{ needs.prepare.outputs.push == 'true' && env.BATCH_SETTINGS || env.RUNNER_SETTINGS }}
+          repositories: '[ { "id":"dvsa-github-packages", "name":"dvsa-github-packages", "url":"https://maven.pkg.github.com/dvsa/*", "releases": { "enabled": "true" }, "snapshots": { "enabled": "true" } }]'
+          output_file: ./settings-build.xml
+
+      - name: view settings files
+        run: |
+          echo "Build-time settings:"
+          cat ./settings-build.xml
+          echo "Runtime settings:"
+          cat ./settings-runtime.xml
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ env.REGISTRY }}/vol-qa/vol-security-test
+            ${{ env.REGISTRY_MIRROR }}/dvsa/vol-qa/vol-security-test
+          tags: |
+            type=sha,prefix=,format=short
+            type=semver,enable=${{ needs.prepare.outputs.is-release == 'true' }},pattern={{version}},value=${{ needs.prepare.outputs.version }}
+            type=raw,value=latest
+
+      - name: Configure AWS credentials
+        if: ${{ needs.prepare.outputs.push == 'true' }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.ACCOUNT_NONPROD_TEST_OIDC_ROLE }}
+          aws-region: ${{ vars.TF_AWS_REGION}}
+
+      - name: Login to ECR
+        if: ${{ needs.prepare.outputs.push == 'true' }}
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+
+      - name: Login to GHCR
+        if: ${{ needs.prepare.outputs.push == 'true' }}
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY_MIRROR }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Untag existing latest image in ECR
+        if: ${{ needs.prepare.outputs.push == 'true' }}
+        run: |
+          aws ecr batch-delete-image --repository-name vol-qa/vol-security-test --image-ids imageTag=latest
+
+      - name: Build ${{ needs.prepare.outputs.push == 'true' && 'and push ' || '' }}Docker image
+        id: build-and-push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: infra/docker/Dockerfile
+          platforms: linux/arm64
+          push: ${{ needs.prepare.outputs.push == 'true' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
