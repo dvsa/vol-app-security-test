@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   release-please:
     name: Release
@@ -14,41 +17,25 @@ jobs:
       pull-requests: write
     outputs:
       tag_name: ${{ steps.release.outputs.tag_name }}
-      release_created: ${{ steps.release.outputs.release_created }}
+      release_created: ${{steps.release.outputs.release_created}}
     steps:
-      - uses: google-github-actions/release-please-action@v4
+      - uses: googleapis/release-please-action@v4
         id: release
         with:
           release-type: maven
+          target-branch: ${{ github.ref_name }}
 
-  call-build-maven:
-    needs: release-please
-    name: build with Maven
-    uses: ./.github/workflows/maven.yaml
+  docker:
+    name: Docker
+    if: ${{needs.release-please.outputs.release_created}}
+    uses: ./.github/workflows/docker.yaml
+    secrets: inherit
     with:
-      maven-goal: package
-
-  publish:
-    runs-on: ubuntu-latest
+      version: ${{ needs.release-please.outputs.tag_name }}
+      push: true
+      is-release: true
     permissions:
       contents: read
+      id-token: write
       packages: write
-    needs:
-      - release-please
-      - call-build-maven
-    steps:
-      - name: checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 11
-        uses: actions/setup-java@v4
-        with:
-          java-version: '11'
-          distribution: 'corretto'
-          cache: 'maven'
-
-      - name: Publish to GitHub Packages Apache Maven
-        if: ${{needs.release-please.outputs.release_created}}
-        run: mvn --batch-mode deploy
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+    needs: release-please

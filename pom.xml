@@ -7,13 +7,13 @@
     <properties>
         <github.url>https://maven.pkg.github.com/dvsa/vol-app-security-test</github.url>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.version>3.8.1</maven.compiler.version>
-        <junit.version>5.10.1</junit.version>
-        <active-support.version>2.5.14</active-support.version>
-        <uri-constructor.version>2.1.0</uri-constructor.version>
-        <zap-scanner-suite.version>1.0.0</zap-scanner-suite.version>
-        <vol-api-calls.version>3.0.2</vol-api-calls.version>
-        <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
+        <maven.compiler.version>3.13.0</maven.compiler.version>
+        <junit.version>5.11.3</junit.version>
+        <active-support.version>2.11.4</active-support.version>
+        <uri-constructor.version>2.4.0</uri-constructor.version>
+        <zap-scanner-suite.version>1.1.0</zap-scanner-suite.version>
+        <vol-api-calls.version>3.2.3</vol-api-calls.version>
+        <maven.surefire.plugin.version>3.5.2</maven.surefire.plugin.version>
         <http-client.version>4.5.14</http-client.version>
         <java.version>17</java.version>
     </properties>
@@ -34,11 +34,8 @@
             <url>https://repo1.maven.org/maven2</url>
         </repository>
         <repository>
-            <id>github</id>
-            <url>${github.url}</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
+            <id>dvsa-github-packages</id>
+            <url>https://maven.pkg.github.com/dvsa/*</url>
         </repository>
     </repositories>
 
