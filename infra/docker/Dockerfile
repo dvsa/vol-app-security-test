@@ -1,5 +1,5 @@
 # === Builder Stage ===
-FROM maven:3.9.6-amazoncorretto-21 AS builder
+FROM maven:3.9.6-amazoncorretto-17 AS builder
 WORKDIR /build
 
 # Copy Maven settings for build stage (from build context root)
@@ -17,7 +17,7 @@ RUN mvn -B -Dmaven.repo.local=/build/.m2/repository \
     -Dexec.skip=true
 
 # === Runtime Stage ===
-FROM amazoncorretto:21
+FROM amazoncorretto:17
 
 # Install only what is strictly necessary for security testing
 # hadolint ignore=DL3033
