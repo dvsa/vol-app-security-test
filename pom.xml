@@ -34,11 +34,8 @@
             <url>https://repo1.maven.org/maven2</url>
         </repository>
         <repository>
-            <id>github</id>
-            <url>${github.url}</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
+            <id>dvsa-github-packages</id>
+            <url>https://maven.pkg.github.com/dvsa/*</url>
         </repository>
     </repositories>
 
